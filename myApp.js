@@ -1,15 +1,80 @@
 require('dotenv').config();
+const mongoose=require('mongoose')
+const myId='mongodb+srv://aimefils173:filsprimuaime@cluster0.bn4kbqu.mongodb.net/test?retryWrites=true&w=majority';
+
+  
+mongoose.connect(myId, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  dbName: 'people', 
+  useFindAndModify: false,
+  useCreateIndex: true,
+  serverSelectionTimeoutMS: 5000,
+}).then((data) => {
+  console.log("connected",data)
+})
 
 
-let Person;
+const personSchema=new mongoose.Schema({
+    name:{
+      type: String,
+      required: true
+    },
+    age:Number,
+    favoriteFoods:[String]
+})
+    
+let Person = mongoose.model('Person',personSchema)
 
 const createAndSavePerson = (done) => {
-  done(null /*, data*/);
+  let person=new Person({
+    name:'Aime Fils',
+    age:17,
+    favoriteFoods:['pizza','burger']
+  })
+  person.save(function(err, data) {
+    if(err){
+      return done(err);
+    }
+    else 
+      done(null,data)
+  
+  });
+}
+const arrayOfPeople=[
+  {
+    name:"filsprimu",
+   age:29,
+   favoriteFoods:['pizza','keyy']
+  },
+  {
+    name:"primu",
+   age:9,
+   favoriteFoods:['pizza','food']
+  }
+  
+]
+const createManyPeople = (arrayOfPeople, done) => {
+    Person.create(arrayOfPeople, function (err, data) {
+        if (err) {
+            console.error(err);
+            return done(err);
+        } else {
+            return done(null, data);
+        }
+    });
 };
 
-const createManyPeople = (arrayOfPeople, done) => {
-  done(null /*, data*/);
-};
+// const createManyPeople = (arrayOfPeople, done) => {
+//     Person.create(arrayOfPeople, function (err, data) {
+//       if (err) {
+//       console.log(err);
+//       } else {
+//         return done(null, data); 
+//       }
+//     });
+
+// };
 
 const findPeopleByName = (personName, done) => {
   done(null /*, data*/);
